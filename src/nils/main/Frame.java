@@ -14,6 +14,7 @@ public class Frame extends JFrame {
 		Frame f = new Frame();
 		while (true) {
 			f.repaint();
+//			f.panel.update();
 		}
 	}
 

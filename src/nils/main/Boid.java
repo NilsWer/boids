@@ -3,8 +3,10 @@ package nils.main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Boid {
+	private Random random = new Random(System.nanoTime());
 	private DoublePoint pos;
 	private DoublePoint dir;
 	private Color color = Color.BLACK;
@@ -12,13 +14,15 @@ public class Boid {
 	private double sightAngle = Math.PI;
 	private int sensorCount = 20;
 	private double[] sensorAngleList;
-	private double[][] sensorPoints;
-	private double[] sensorList;
+	double[][] sensorPoints;
+	double[] sensorList;
 	private double sensorDistance = 200D;
 
 	public Boid() {
 		pos = new DoublePoint(Frame.width / 2, Frame.height / 2);
-		dir = new DoublePoint(0D, -3D);
+		dir = new DoublePoint(random.nextDouble()-.5, random.nextDouble()-.5);
+		dir.nomalize();
+		dir.multiply(3D);
 
 		sensorAngleList = new double[sensorCount];
 		sensorList = new double[sensorCount];
@@ -100,39 +104,27 @@ public class Boid {
 		dir.x = newdir[0];
 		dir.y = newdir[1];
 	}
+	
 
-	public void checkCollision(ArrayList<Obstical> obs) {
-		
-		// TODO Tod bei Collision mit einem Hindernis
-		for (int i = 0; i < sensorCount; i++) {
-			sensorList[i] = 1;
-		}
-		for (Obstical ob : obs) {
-			// Only if the Obstical is in the near of the Boid
-			if (ob.width / 2 + 200 > Math.abs(ob.xMitte - pos.x) && ob.height / 2 + 200 > Math.abs(ob.yMitte - pos.y)) {
-				for (int i = 0; i < sensorCount; i++) {
-					double currentX = this.sensorPoints[i][0];
-					double currentY = this.sensorPoints[i][1];
-
-					// TODO überprüft nur, ob die Enden der Sensoren in dem Hinderniss sind, das ist
-					// bei kleinen Hindernissen nicht akkurat.
-					if (currentX < ob.x + ob.width && currentX > ob.x && currentY < ob.y + ob.height
-							&& currentY > ob.y) {
-						// TODO Distanz zum nächsten Hindernis nicht einfach nur 0.
-						this.sensorList[i] = 0;
-					}
-				}
-			}
-		}
-
-	}
-
-	public void update(ArrayList<Obstical> obs) {
+	public void update() {
 		for (int i = 0; i < sensorCount; i++) {
 			sensorPoints[i] = transform(sensorDistance, 0D, sensorAngleList[i]);
 		}
-		checkCollision(obs);
 		move();
+	}
+	public double getSensorDistance() {
+		return sensorDistance;
+	}
 
+	public void setSensorDistance(double sensorDistance) {
+		this.sensorDistance = sensorDistance;
+	}
+
+	public DoublePoint getPos() {
+		return pos;
+	}
+
+	public int getSensorCount() {
+		return sensorCount;
 	}
 }

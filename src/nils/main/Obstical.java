@@ -21,4 +21,5 @@ public class Obstical {
 		g.setColor(this.color);
 		g.fillRect(x, y, width, height);
 	}
+	
 }
